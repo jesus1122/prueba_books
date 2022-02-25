@@ -1,19 +1,23 @@
-const months = ["A", "B", "C", "D", "E", "F", "G", "I","J", "K", "L","m","n","ñ","o","p","q","r,","s","t","u","v","w","x","y","z"];
+const months = ["A", "B", "C", "D", "E", "F", "G","H","I","J","K", "L","M","N","O","P","Q","R","S","T","U","V","w","X","Y","Z"];
 var nivel = 1;
+var success = false;
 var Quesions = [];
-const selectedLetters  = [];
-const playerLetters = [];
+var selectedLetters  = [];
+var playerLetters = [];
 var numQUestion = 0;
-for (var letra = 0; letra < 10; letra++) {
-	const randomElement = months[Math.floor(Math.random() * months.length)];
-	selectedLetters.push(randomElement)
+
+function setQuestions(){
+	selectedLetters = [];
+	for (var letra = 0; letra < 10; letra++) {
+		const randomElement = months[Math.floor(Math.random() * months.length)];
+		selectedLetters.push(randomElement)
+	}	
 }
-  	console.log("Letras aleatorias",selectedLetters);
-
-
+	setQuestions();
 //window.addEventListener("click",useMouse)
 window.addEventListener("keydown",useKeyboard)
 Questions = amountQuestions(1);
+	
 console.log("preguntas",Questions);
 
 function useMouse(event) {
@@ -28,9 +32,13 @@ function useKeyboard(event){
 	var keyElement = document.getElementById(event.keyCode);
 	keyElement.classList.add("active");
 	validate(event);
-	Questions = amountQuestions(nivel);
-	console.log("questions actualizado",Questions);
-	
+	console.log("pregunta",Questions);
+	if(success == true){
+		nivel = nivel + 1;
+		console.log("paso el nivel");
+		Questions = amountQuestions(nivel);
+		console.log("preguntas del siguiente nivel",Questions);
+	}
 }
 
 function amountQuestions(amount){
@@ -39,20 +47,37 @@ function amountQuestions(amount){
 
 function validate(event){
 	var keyElement = document.getElementById(event.keyCode);
-//console.log("pregunta",pregunta[0]);
-//console.log("respuesta",playerLetters[1])
-	console.log(numQUestion);
-if(Questions[0] == playerLetters[0]){
+	console.log(Questions)
+	var respuesta = isEqual(Questions,playerLetters);
+if(respuesta == true){
 	console.log("respondio bien");
 	keyElement.classList.add("success");
-	nivel = nivel + 1;
-	numQUestion = numQUestion + 1;
+	success = true;
 }
 	else{
 	keyElement.classList.add("fail");
-	console.log("respondio mal");
+	selectedLetters = [];
+	playerLetters = [];
+	for (var letra = 0; letra < 10; letra++) {
+		const randomElement = months[Math.floor(Math.random() * months.length)];
+		selectedLetters.push(randomElement)
+	}
+		alert("Perdio");
+		Questions = amountQuestions(1);
+		console.log("pregunta nueva",Questions);
+		
 	}
 	const classTimeOut = setTimeout(function(){
 	keyElement.classList.remove("active");	
 	},500)
+}
+
+function isEqual(Array1,Array2){
+	console.log("array1",Array1)
+	console.log("array2",Array2)
+	if(JSON.stringify(Array1) == JSON.stringify(Array2)){
+		return true
+	}
+	return false
+	
 }
